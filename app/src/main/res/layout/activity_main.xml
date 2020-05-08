@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
     <Button
-            android:text="时间升序"
+            android:text="圈数排序"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button1" app:layout_constraintStart_toStartOf="parent"
@@ -15,16 +15,18 @@
             android:layout_marginTop="16dp"
             app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/button2"/>
     <TextView
+            android:scrollbars="vertical"
             android:text="加载中"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:id="@+id/textView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button5" app:layout_constraintVertical_bias="0.050000012"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@+id/button5" app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"/>
     <Button
-            android:text="时间降序"
+            android:text="号码排序"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button2"
@@ -52,6 +54,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button5"
-            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="64dp"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toEndOf="@+id/button7"
+            app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp" app:layout_constraintTop_toBottomOf="@+id/button3"/>
+    <Button
+            android:text="仅看速滑"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/button4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/button6"
+            app:layout_constraintTop_toBottomOf="@+id/button1" android:layout_marginTop="10dp"/>
+    <Button
+            android:text="仅看速桩"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/button6"
+            app:layout_constraintEnd_toStartOf="@+id/button7" app:layout_constraintStart_toEndOf="@+id/button4"
+            app:layout_constraintHorizontal_bias="0.5" android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/button2"/>
+    <Button
+            android:text="查看全部"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/button7"
+            app:layout_constraintStart_toEndOf="@+id/button6"
+            app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/button5"
+            app:layout_constraintTop_toBottomOf="@+id/button" android:layout_marginTop="10dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

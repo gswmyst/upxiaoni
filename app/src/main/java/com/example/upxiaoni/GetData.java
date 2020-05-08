@@ -12,6 +12,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Entity;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class GetData {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("access_token", access_token));
-        params.add(new BasicNameValuePair("id", "15391"));
+        params.add(new BasicNameValuePair("id", "15391"));//获取圈数,jsonarray为圈数
         String entity=EntityUtils.toString(new UrlEncodedFormEntity(params,Charset.forName("utf8")));
         HttpGet httpGet = new HttpGet("https://www.bigiot.net/oauth/historydata"+"?"+entity);
         HttpEntity entity2=null;
@@ -56,7 +57,8 @@ public class GetData {
         }
         JSONArray jsonArray=new JSONArray(EntityUtils.toString(entity2,"utf-8"));
         EntityUtils.consume(entity2);
-        params.set(1,new BasicNameValuePair("id","15422"));
+
+        params.set(1,new BasicNameValuePair("id","15422"));//获取选手号码,jsonarray1为号码
         entity=EntityUtils.toString(new UrlEncodedFormEntity(params,Charset.forName("utf8")));
         httpGet = new HttpGet("https://www.bigiot.net/oauth/historydata"+"?"+entity);
         HttpEntity entity3=null;
@@ -66,19 +68,43 @@ public class GetData {
         }
         JSONArray jsonArray1=new JSONArray(EntityUtils.toString(entity3,"utf-8"));
         EntityUtils.consume(entity3);
+
+        params.set(1,new BasicNameValuePair("id","15423"));//获取模式
+        entity=EntityUtils.toString(new UrlEncodedFormEntity(params,Charset.forName("utf8")));
+        httpGet = new HttpGet("https://www.bigiot.net/oauth/historydata"+"?"+entity);
+        HttpEntity entityMode=null;
+        httpResponse = httpClient.execute(httpGet);
+        if (httpResponse.getCode()==200){
+            entityMode=httpResponse.getEntity();
+        }
+        JSONArray jsonArrayMode=new JSONArray(EntityUtils.toString(entityMode,"utf-8"));
+        EntityUtils.consume(entityMode);
+
+        params.set(1,new BasicNameValuePair("id","15424"));//获取成绩
+        entity=EntityUtils.toString(new UrlEncodedFormEntity(params,Charset.forName("utf8")));
+        httpGet=new HttpGet("https://www.bigiot.net/oauth/historydata"+"?"+entity);
+        HttpEntity entityScore=null;
+        httpResponse=httpClient.execute(httpGet);
+        if (httpResponse.getCode()==200){
+            entityScore=httpResponse.getEntity();
+        }
+        JSONArray jsonArrayScore=new JSONArray(EntityUtils.toString(entityScore,"utf-8"));
+        EntityUtils.consume(entityScore);
+
         List<Score> scores=new ArrayList<Score>();
-        for (int i=0;i<jsonArray.length();i++){
-            JSONObject s=(JSONObject) jsonArray.get(i);
-            JSONObject ms=(JSONObject) jsonArray1.get(i);
+        int roundCount=0;//若为模式2速滑模式则添加记录后roundCount++
+        for (int i=0;i<jsonArrayScore.length();i++){
+            JSONObject s=(JSONObject) jsonArrayScore.get(i);
+            JSONObject num=(JSONObject) jsonArray1.get(i);
+            JSONObject mode=(JSONObject) jsonArrayMode.get(i);
             Score score=null;
-            if (Double.parseDouble(ms.getString("value"))<10){
-                score=new Score(s.getString("value")+".00"+ms.getString("value"),s.getString("time"));
+            if (mode.getString("value").equals("2")) {
+                JSONObject round = (JSONObject) jsonArray.get(roundCount);
+                roundCount++;
+                score = new Score(s.getString("value"), s.getString("time"),round.getString("value"),num.getString("value"),mode.getString("value"));
             }
-            else if(Double.parseDouble(ms.getString("value"))<100){
-                score=new Score(s.getString("value")+".0"+ms.getString("value"),s.getString("time"));
-            }
-            else{
-                score=new Score(s.getString("value")+"."+ms.getString("value"),s.getString("time"));
+            else{//若非速滑模式则round为0
+                score = new Score(s.getString("value"), s.getString("time"),"0",num.getString("value"),mode.getString("value"));
             }
             scores.add(score);
         }
